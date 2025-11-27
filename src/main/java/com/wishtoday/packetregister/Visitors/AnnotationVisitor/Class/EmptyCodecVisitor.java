@@ -1,3 +1,4 @@
+/*
 package com.wishtoday.packetregister.Visitors.AnnotationVisitor.Class;
 
 import com.wishtoday.packetregister.Data.PacketClassInfo;
@@ -47,3 +48,4 @@ public class EmptyCodecVisitor extends AnnotationClassPathVisitor {
         return null;
     }
 }
+*/

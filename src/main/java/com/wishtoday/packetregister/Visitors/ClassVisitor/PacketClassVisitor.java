@@ -1,12 +1,10 @@
 package com.wishtoday.packetregister.Visitors.ClassVisitor;
 
-import com.wishtoday.Annotation.EmptyCodec;
 import com.wishtoday.Annotation.Packet;
 import com.wishtoday.packetregister.Data.PacketClassInfo;
 import com.wishtoday.packetregister.Manager.PacketClassManager;
 import com.wishtoday.packetregister.Util.ClassUtil;
 import com.wishtoday.packetregister.Util.PacketState;
-import com.wishtoday.packetregister.Visitors.AnnotationVisitor.Class.EmptyCodecVisitor;
 import com.wishtoday.packetregister.Visitors.AnnotationVisitor.Class.PacketVisitor;
 import com.wishtoday.packetregister.Visitors.FieldVisitor.PacketFieldVisitor;
 import com.wishtoday.packetregister.Visitors.MethodVisitor.PacketHandlerVisitor;
@@ -47,9 +45,9 @@ public class PacketClassVisitor extends ClassVisitor {
         if (descriptor.equals(Type.getDescriptor(Packet.class))) {
             return new PacketVisitor(this.classPath, this);
         }
-        if (descriptor.equals(Type.getDescriptor(EmptyCodec.class))) {
+        /*if (descriptor.equals(Type.getDescriptor(EmptyCodec.class))) {
             return new EmptyCodecVisitor(this.classPath);
-        }
+        }*/
         return super.visitAnnotation(descriptor, visible);
     }
 

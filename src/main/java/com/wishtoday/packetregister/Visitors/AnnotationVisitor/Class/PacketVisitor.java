@@ -7,8 +7,9 @@ import com.wishtoday.packetregister.Visitors.AnnotationVisitor.AnnotationPacketC
 import com.wishtoday.packetregister.Visitors.ClassVisitor.PacketClassVisitor;
 
 public class PacketVisitor extends AnnotationPacketClassVisitor {
-    public PacketVisitor(String classPath, PacketClassVisitor classVisitor) {
-        super(classPath, classVisitor);
+    public PacketVisitor(String classPath
+            , PacketClassVisitor classVisitor) {
+        super(classPath ,classVisitor);
     }
     private PacketState state;
 

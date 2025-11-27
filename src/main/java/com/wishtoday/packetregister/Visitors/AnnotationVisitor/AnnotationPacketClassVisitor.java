@@ -4,8 +4,9 @@ import com.wishtoday.packetregister.Visitors.ClassVisitor.PacketClassVisitor;
 
 public abstract class AnnotationPacketClassVisitor extends AnnotationClassPathVisitor {
     protected PacketClassVisitor classVisitor;
-    public AnnotationPacketClassVisitor(String classPath,  PacketClassVisitor packetClassVisitor) {
-        super(classPath);
+    public AnnotationPacketClassVisitor(String classPath
+            ,  PacketClassVisitor packetClassVisitor) {
+        super(classPath,  null);
         this.classVisitor = packetClassVisitor;
     }
 }
