@@ -1,6 +1,7 @@
 package com.wishtoday.packetregister;
 
 import com.wishtoday.Annotation.*;
+import com.wishtoday.packetregister.Data.Storages.DataStorage;
 import com.wishtoday.packetregister.Generator.RegisterClassGenerator;
 import com.wishtoday.packetregister.Util.IdentifierCreator;
 import com.wishtoday.packetregister.Util.PacketState;
@@ -21,7 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @Log4j2
-public class Packetregister implements ModInitializer {
+public class Packetregister<T> implements ModInitializer {
 
     @Override
     public void onInitialize() {
