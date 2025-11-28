@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @Log4j2
-public class Packetregister<T> implements ModInitializer {
+public class Packetregister implements ModInitializer {
 
     @Override
     public void onInitialize() {
@@ -33,27 +33,31 @@ public class Packetregister<T> implements ModInitializer {
                 .scan();
         ClassInfoList list = scan.getClassesWithAnnotation(Packet.class);
         ClassInfoList initList = scan.getClassesWithAnnotation(Initialize.class);
-        for (ClassInfo info : list) {
-            Resource resource = info.getResource();
-            try (InputStream open = resource.open()) {
-                ClassReader reader = new ClassReader(open);
-                reader.accept(new PacketClassVisitor(), 0);
-            } catch (IOException e) {
-                log.error("asm exception {}", e.toString());
-            }
-        }
-        initList.forEach(classInfo -> {
-            try {
-                Class.forName(classInfo.getName());
-            } catch (ClassNotFoundException e) {
-                log.error("class {} not found {}", classInfo.getName(), e.toString());
-            }
-        });
+        list.forEach(Packetregister::registerClassImpl);
+        initList.forEach(Packetregister::initializeImpl);
         new RegisterClassGenerator("GeneratePacketRegister", "com.wishtoday").start();
         scan.close();
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             sender.sendPacket(new TestPayload(10));
         });
+    }
+
+    private static void initializeImpl(ClassInfo classInfo) {
+        try {
+            Class.forName(classInfo.getName());
+        } catch (ClassNotFoundException e) {
+            log.error("class {} not found {}", classInfo.getName(), e.toString());
+        }
+    }
+
+    private static void registerClassImpl(ClassInfo info) {
+        Resource resource = info.getResource();
+        try (InputStream open = resource.open()) {
+            ClassReader reader = new ClassReader(open);
+            reader.accept(new PacketClassVisitor(), 0);
+        } catch (IOException e) {
+            log.error("asm exception {}", e.toString());
+        }
     }
 
     @Packet(PacketState.S2C)

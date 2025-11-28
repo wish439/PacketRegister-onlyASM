@@ -14,39 +14,35 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 import static org.objectweb.asm.Opcodes.*;
 
 @Log4j2
-public class RegisterClassGenerator {
-    private final String className;
-    private final String packageName;
+public class RegisterClassGenerator extends ClassGenerator {
     private String C2SRegisterMethod = "C2SRegister";
     private String S2CRegisterMethod = "S2CRegister";
     private String allRegisterMethods = "register";
     private ClassWriter cw;
     private final int PUBSTA = ACC_PUBLIC + ACC_STATIC;
-    public RegisterClassGenerator(String className
+
+    public RegisterClassGenerator(
+            String className
             , String packageName
-    , String C2SRegisterMethod
-    , String S2CRegisterMethod
-    , String allRegisterMethods) {
-        this.className = className;
-        this.packageName = packageName;
+            , String C2SRegisterMethod
+            , String S2CRegisterMethod
+            , String allRegisterMethods) {
+        super(className, packageName);
         this.C2SRegisterMethod = C2SRegisterMethod;
         this.S2CRegisterMethod = S2CRegisterMethod;
         this.allRegisterMethods = allRegisterMethods;
     }
 
     public RegisterClassGenerator(String className, String packageName) {
-        this.className = className;
-        this.packageName = packageName;
+        super(className, packageName);
     }
+
     public void start() {
         this.generateClass();
         this.generateS2CRegister();
@@ -54,6 +50,7 @@ public class RegisterClassGenerator {
         this.generateAllRegister();
         this.save();
     }
+
     private void save() {
         this.cw.visitEnd();
         byte[] array = cw.toByteArray();
@@ -64,15 +61,7 @@ public class RegisterClassGenerator {
             log.error("load class error", e);
         }
     }
-    public void generateClass() {
-        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-//        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-//        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-        cw.visit(Opcodes.V21, ACC_PUBLIC
-                , getCompleteName(),null
-                , "java/lang/Object" , null);
-        this.cw = cw;
-    }
+
     private void generateAllRegister() {
         ClassWriter cw = this.cw;
         MethodVisitor mv = cw.visitMethod(PUBSTA, this.allRegisterMethods
@@ -83,6 +72,7 @@ public class RegisterClassGenerator {
         mv.visitInsn(RETURN);
         mv.visitEnd();
     }
+
     private void generateS2CRegister() {
         ClassWriter cw = this.cw;
         MethodVisitor mv = cw.visitMethod(PUBSTA, this.S2CRegisterMethod
@@ -96,7 +86,7 @@ public class RegisterClassGenerator {
             FieldStorage codecStorage = classInfo.getRegisterInfo().getCODEC();
             String payloadRegisterInternal = Type.getInternalName(PayloadTypeRegistry.class);
             String payloadRegisterDesc = Type.getDescriptor(PayloadTypeRegistry.class);
-            mv.visitMethodInsn(INVOKESTATIC ,payloadRegisterInternal, "playS2C", "()" + payloadRegisterDesc, true);
+            mv.visitMethodInsn(INVOKESTATIC, payloadRegisterInternal, "playS2C", "()" + payloadRegisterDesc, true);
             mv.visitFieldInsn(GETSTATIC, idStorage.getClassPath(), idStorage.getElementName(), Type.getDescriptor(CustomPayload.Id.class));
             mv.visitFieldInsn(GETSTATIC, codecStorage.getClassPath(), codecStorage.getElementName(), Type.getDescriptor(PacketCodec.class));
             mv.visitMethodInsn(INVOKEINTERFACE, payloadRegisterInternal, "register", getRegisterDesc(), true);
@@ -108,6 +98,7 @@ public class RegisterClassGenerator {
         mv.visitInsn(RETURN);
         mv.visitEnd();
     }
+
     private void generateC2SRegister() {
         ClassWriter cw = this.cw;
         MethodVisitor mv = cw.visitMethod(PUBSTA, this.C2SRegisterMethod
@@ -121,7 +112,7 @@ public class RegisterClassGenerator {
             FieldStorage codecStorage = classInfo.getRegisterInfo().getCODEC();
             String payloadRegisterInternal = Type.getInternalName(PayloadTypeRegistry.class);
             String payloadRegisterDesc = Type.getDescriptor(PayloadTypeRegistry.class);
-            mv.visitMethodInsn(INVOKESTATIC ,payloadRegisterInternal, "playC2S", "()" + payloadRegisterDesc, true);
+            mv.visitMethodInsn(INVOKESTATIC, payloadRegisterInternal, "playC2S", "()" + payloadRegisterDesc, true);
             mv.visitFieldInsn(GETSTATIC, idStorage.getClassPath(), idStorage.getElementName(), Type.getDescriptor(CustomPayload.Id.class));
             mv.visitFieldInsn(GETSTATIC, codecStorage.getClassPath(), codecStorage.getElementName(), Type.getDescriptor(PacketCodec.class));
             mv.visitMethodInsn(INVOKEINTERFACE, payloadRegisterInternal, "register", getRegisterDesc(), true);
@@ -130,18 +121,12 @@ public class RegisterClassGenerator {
         mv.visitInsn(RETURN);
         mv.visitEnd();
     }
+
     private String getRegisterDesc() {
         return "(" +
                 Type.getDescriptor(CustomPayload.Id.class) +
                 Type.getDescriptor(PacketCodec.class) +
                 ")" +
                 Type.getDescriptor(CustomPayload.Type.class);
-    }
-    private String getCompleteName() {
-        return String.format("%s.%s", packageName, className).replace(".","/");
-    }
-    private String getThisClassInternalName() {
-        //return this.getCompleteName();
-        return String.format("%s.%s", packageName, className);
     }
 }
