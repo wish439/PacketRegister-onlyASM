@@ -17,7 +17,7 @@ public class IDVisitor extends AnnotationClassPathVisitor {
     public void visitEnd() {
         RegisterInfo info = PacketClassManager
                 .getInstance()
-                .computeIfAbsent(classPath, s -> new PacketClassInfo<>())
+                .computeIfAbsent(classPath, s -> new PacketClassInfo())
                 .getRegisterInfo();
         info.setID(FieldStorage.builder()
                 .classPath(this.classPath)

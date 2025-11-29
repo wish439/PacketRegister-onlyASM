@@ -4,6 +4,7 @@ import com.wishtoday.Annotation.Packet;
 import com.wishtoday.packetregister.Data.PacketClassInfo;
 import com.wishtoday.packetregister.Manager.PacketClassManager;
 import com.wishtoday.packetregister.Util.ClassUtil;
+import com.wishtoday.packetregister.Util.DescUtils;
 import com.wishtoday.packetregister.Util.PacketState;
 import com.wishtoday.packetregister.Visitors.AnnotationVisitor.Class.PacketVisitor;
 import com.wishtoday.packetregister.Visitors.FieldVisitor.PacketFieldVisitor;
@@ -64,9 +65,9 @@ public class PacketClassVisitor extends ClassVisitor {
     @Override
     public void visitEnd() {
         if (state == null) return;
-        PacketClassInfo<CustomPayload> info = PacketClassManager.getInstance()
-                .computeIfAbsent(this.classPath, s -> new PacketClassInfo<>());
-        info.setClazz((Class<CustomPayload>) ClassUtil.getClass(this.classPath));
+        PacketClassManager.getInstance()
+                .computeIfAbsent(this.classPath, k -> new PacketClassInfo())
+                        .setClazz((Class<? extends CustomPayload>) ClassUtil.getClass(classPath));
         super.visitEnd();
     }
 }

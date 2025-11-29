@@ -45,7 +45,7 @@ public class PacketHandlerVisitor extends MethodVisitor {
     public void visitEnd() {
         if (!isHandler) return;
         PacketClassManager.getInstance()
-                .computeIfAbsent(this.classPath, e -> new PacketClassInfo<>())
+                .computeIfAbsent(this.classPath, e -> new PacketClassInfo())
                 .setMethodStorage(
                         MethodStorage.builder()
                                 .classPath(this.classPath)

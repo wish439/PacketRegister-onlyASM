@@ -25,7 +25,7 @@ public class PacketVisitor extends AnnotationPacketClassVisitor {
     @Override
     public void visitEnd() {
         PacketClassManager.getInstance()
-                .computeIfAbsent(this.classPath, s -> new PacketClassInfo<>())
+                .computeIfAbsent(this.classPath, s -> new PacketClassInfo())
                 .setState(this.state);
     }
 }

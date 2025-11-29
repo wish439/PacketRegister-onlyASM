@@ -20,7 +20,7 @@ public class CodecVisitor extends AnnotationClassPathVisitor {
     @Override
     public void visitEnd() {
         RegisterInfo info = PacketClassManager.getInstance()
-                .computeIfAbsent(this.classPath, e -> new PacketClassInfo<>())
+                .computeIfAbsent(this.classPath, e -> new PacketClassInfo())
                 .getRegisterInfo();
         info.setCODEC(FieldStorage.builder()
                 .classPath(this.classPath)

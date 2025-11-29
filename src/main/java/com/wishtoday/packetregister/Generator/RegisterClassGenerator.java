@@ -24,7 +24,7 @@ public class RegisterClassGenerator extends ClassGenerator {
     private String C2SRegisterMethod = "C2SRegister";
     private String S2CRegisterMethod = "S2CRegister";
     private String allRegisterMethods = "register";
-    private ClassWriter cw;
+//    private ClassWriter cw;
     private final int PUBSTA = ACC_PUBLIC + ACC_STATIC;
 
     public RegisterClassGenerator(
@@ -44,7 +44,6 @@ public class RegisterClassGenerator extends ClassGenerator {
     }
 
     public void start() {
-        this.generateClass();
         this.generateS2CRegister();
         this.generateC2SRegister();
         this.generateAllRegister();
@@ -54,7 +53,7 @@ public class RegisterClassGenerator extends ClassGenerator {
     private void save() {
         this.cw.visitEnd();
         byte[] array = cw.toByteArray();
-        Class<?> clazz = new SimpleClassLoader().loadClass(getThisClassInternalName(), array);
+        Class<?> clazz = loader.loadClass(getThisClassInternalName(), array);
         try {
             clazz.getMethod(this.allRegisterMethods).invoke(null);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
@@ -78,9 +77,9 @@ public class RegisterClassGenerator extends ClassGenerator {
         MethodVisitor mv = cw.visitMethod(PUBSTA, this.S2CRegisterMethod
                 , "()V", null, null);
         mv.visitCode();
-        Collection<PacketClassInfo<CustomPayload>> info = PacketClassManager.getInstance()
+        Collection<PacketClassInfo> info = PacketClassManager.getInstance()
                 .getAllPacketClassInfo();
-        for (PacketClassInfo<CustomPayload> classInfo : info) {
+        for (PacketClassInfo classInfo : info) {
             if (classInfo.getState() != PacketState.S2C) continue;
             FieldStorage idStorage = classInfo.getRegisterInfo().getID();
             FieldStorage codecStorage = classInfo.getRegisterInfo().getCODEC();
@@ -104,9 +103,9 @@ public class RegisterClassGenerator extends ClassGenerator {
         MethodVisitor mv = cw.visitMethod(PUBSTA, this.C2SRegisterMethod
                 , "()V", null, null);
         mv.visitCode();
-        Collection<PacketClassInfo<CustomPayload>> info = PacketClassManager.getInstance()
+        Collection<PacketClassInfo> info = PacketClassManager.getInstance()
                 .getAllPacketClassInfo();
-        for (PacketClassInfo<CustomPayload> classInfo : info) {
+        for (PacketClassInfo classInfo : info) {
             if (classInfo.getState() != PacketState.C2S) continue;
             FieldStorage idStorage = classInfo.getRegisterInfo().getID();
             FieldStorage codecStorage = classInfo.getRegisterInfo().getCODEC();
