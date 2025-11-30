@@ -14,8 +14,11 @@ public enum PacketState {
     private final String contextClass;
     @Getter
     private final EnvType envType;
+    @Getter
+    private final String classDesc;
     PacketState(String contextClass, EnvType envType) {
         this.contextClass = contextClass;
         this.envType = envType;
+        this.classDesc = DescUtils.checkDesc(contextClass);
     }
 }

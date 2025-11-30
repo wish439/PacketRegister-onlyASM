@@ -1,20 +1,16 @@
 package com.wishtoday.packetregister.Generator.HandlerRegister;
 
-import com.wishtoday.packetregister.ClassLoader.SimpleClassLoader;
 import com.wishtoday.packetregister.Data.PacketClassInfo;
 import com.wishtoday.packetregister.Exception.ClassLoadException;
 import com.wishtoday.packetregister.Generator.ClassGenerator;
 import com.wishtoday.packetregister.Manager.PacketClassManager;
 import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.util.math.BlockPos;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 
 @Log4j2
@@ -40,10 +36,6 @@ public abstract class AbstractHandlerRegister extends ClassGenerator
 
         Class<?> aClass = loader.loadClass(getThisClassInternalName(), data);
         try {
-            /*ClassLoader loader = BlockPos.class.getClassLoader();
-            Method method = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, int.class, int.class);
-            Object o = method.invoke(loader, this.getThisClassInternalName(), data, 0, data.length);
-            ((Class<?>)o).getMethod(this.registerMethodName).invoke(null);*/
             aClass.getMethod(this.registerMethodName).invoke(null);
         } catch (NoSuchMethodException e) {
             log.error("No such method: {}", this.registerMethodName);

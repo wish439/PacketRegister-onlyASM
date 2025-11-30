@@ -13,7 +13,8 @@ public abstract class ClassGenerator {
     protected ClassGenerator(String className, String packageName) {
         this.className = className;
         this.packageName = packageName;
-        this.loader = new SimpleClassLoader();
+        this.loader = new SimpleClassLoader(this.getClass().getClassLoader());
+//        this.loader = new SimpleClassLoader();
         this.generateClass();
     }
     private void generateClass() {

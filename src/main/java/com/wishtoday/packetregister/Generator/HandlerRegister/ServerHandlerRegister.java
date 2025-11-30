@@ -90,16 +90,11 @@ public class ServerHandlerRegister extends AbstractHandlerRegister {
             mv.visitInvokeDynamicInsn(
                     "receive"
                     , String.format("()%s"
-//                    , String.format("(%s%s)%s"
-//                            , Type.getDescriptor(info.getClazz())
-//                            , Type.getDescriptor(CustomPayload.class)
-//                            , Type.getDescriptor(ServerPlayNetworking.Context.class)
                             , Type.getDescriptor(ServerPlayNetworking.PlayPayloadHandler.class))
                     , bsm
                     , Type.getMethodType(Type.VOID_TYPE, Type.getType(CustomPayload.class), Type.getType(ServerPlayNetworking.Context.class))
                     , handle
                     , Type.getMethodType(Type.VOID_TYPE, Type.getType(info.getClazz()), Type.getType(ServerPlayNetworking.Context.class)));
-//            mv.visitVarInsn(ASTORE, 0);
             mv.visitMethodInsn(
                     INVOKESTATIC
                     , Type.getInternalName(ServerPlayNetworking.class)
@@ -108,6 +103,9 @@ public class ServerHandlerRegister extends AbstractHandlerRegister {
                     , false);
             i++;
         }
+        mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+        mv.visitLdcInsn("Test111 ServerHandlerRegister generate's method");
+        mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
         mv.visitInsn(RETURN);
         mv.visitMaxs(0, 0);
         mv.visitEnd();

@@ -1,6 +1,5 @@
 package com.wishtoday.packetregister.Generator;
 
-import com.wishtoday.packetregister.ClassLoader.SimpleClassLoader;
 import com.wishtoday.packetregister.Data.PacketClassInfo;
 import com.wishtoday.packetregister.Data.Storage.FieldStorage;
 import com.wishtoday.packetregister.Manager.PacketClassManager;
