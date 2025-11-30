@@ -10,6 +10,7 @@ import com.wishtoday.packetregister.Visitors.ClassVisitor.PacketClassVisitor;
 import io.github.classgraph.*;
 import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -37,12 +38,13 @@ public class Packetregister implements ModInitializer {
         ClassInfoList initList = scan.getClassesWithAnnotation(Initialize.class);
         list.forEach(Packetregister::registerClassImpl);
         initList.forEach(Packetregister::initializeImpl);
-        new RegisterClassGenerator("GeneratePacketRegister", "com.wishtoday").start();
+        new RegisterClassGenerator("GeneratePacketRegister", "com.wishtoday").generate();
         HandlerRegisterManager.getInstance().startRegister();
         scan.close();
-        /*ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             sender.sendPacket(new TestPayload(10));
-        });*/
+        });
+
     }
 
     private static void initializeImpl(ClassInfo classInfo) {
@@ -63,7 +65,7 @@ public class Packetregister implements ModInitializer {
         }
     }
 
-    /*@Packet(PacketState.S2C)
+    @Packet(PacketState.S2C)
     public record TestPayload(int a) implements CustomPayload {
         @ID
         public static final CustomPayload.Id<TestPayload> ID = new Id<>(Identifier.of("pctr", "test"));
@@ -82,7 +84,7 @@ public class Packetregister implements ModInitializer {
         public Id<? extends CustomPayload> getId() {
             return ID;
         }
-    }*/
+    }
     @Packet(PacketState.C2S)
 //    @EmptyCodec
     public record TestPayload2() implements CustomPayload {

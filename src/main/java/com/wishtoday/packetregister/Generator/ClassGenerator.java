@@ -24,6 +24,21 @@ public abstract class ClassGenerator {
                 , "java/lang/Object", null);
         this.cw = cw;
     }
+
+    /**
+     * Custom load/save.
+     *
+     * @param data this class's bytecode;
+     * */
+    protected abstract void load(byte[] data);
+
+    /**
+     * Override this method
+     * please visitEnd ClassWrite and invoke
+     * {@link ClassGenerator#load(byte[] data)}
+     *
+     */
+    public abstract void generate();
     protected String getCompleteName() {
         return this.getThisClassInternalName().replace(".","/");
     }

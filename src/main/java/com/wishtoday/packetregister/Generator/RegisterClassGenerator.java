@@ -42,22 +42,23 @@ public class RegisterClassGenerator extends ClassGenerator {
         super(className, packageName);
     }
 
-    public void start() {
-        this.generateS2CRegister();
-        this.generateC2SRegister();
-        this.generateAllRegister();
-        this.save();
-    }
-
-    private void save() {
-        this.cw.visitEnd();
-        byte[] array = cw.toByteArray();
-        Class<?> clazz = loader.loadClass(getThisClassInternalName(), array);
+    @Override
+    protected void load(byte[] data) {
+        Class<?> clazz = loader.loadClass(getThisClassInternalName(), data);
         try {
             clazz.getMethod(this.allRegisterMethods).invoke(null);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             log.error("load class error", e);
         }
+    }
+
+    @Override
+    public void generate() {
+        this.generateS2CRegister();
+        this.generateC2SRegister();
+        this.generateAllRegister();
+        this.cw.visitEnd();
+        this.load(this.cw.toByteArray());
     }
 
     private void generateAllRegister() {

@@ -1,6 +1,10 @@
 package com.wishtoday.packetregister.Generator.HandlerRegister;
 
 import com.wishtoday.packetregister.Data.PacketClassInfo;
+import com.wishtoday.packetregister.Util.PacketState;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.network.packet.CustomPayload;
+import org.objectweb.asm.Type;
 
 import java.util.List;
 
@@ -14,22 +18,14 @@ public class ClientHandlerRegister extends AbstractHandlerRegister{
     }
 
     @Override
-    protected void generateLambdaClasses() {
-
-    }
-
-    @Override
-    protected String getLambdaMethodDesc(PacketClassInfo info) {
-        return "";
+    protected PacketState getProcessState() {
+        return PacketState.S2C;
     }
 
     @Override
     protected String getRegisterMethodDesc() {
-        return "";
-    }
-
-    @Override
-    public void registerHandlers() {
-
+        return String.format("(%s%s)Z"
+                , Type.getDescriptor(CustomPayload.Id.class)
+                , Type.getDescriptor(ClientPlayNetworking.PlayPayloadHandler.class));
     }
 }
