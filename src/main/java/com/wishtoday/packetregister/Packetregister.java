@@ -41,9 +41,11 @@ public class Packetregister implements ModInitializer {
         new RegisterClassGenerator("GeneratePacketRegister", "com.wishtoday").generate();
         HandlerRegisterManager.getInstance().startRegister();
         scan.close();
+/*
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             sender.sendPacket(new TestPayload(10));
         });
+*/
 
     }
 
@@ -65,7 +67,7 @@ public class Packetregister implements ModInitializer {
         }
     }
 
-    @Packet(PacketState.S2C)
+   /* @Packet(PacketState.S2C)
     public record TestPayload(int a) implements CustomPayload {
         @ID
         public static final CustomPayload.Id<TestPayload> ID = new Id<>(Identifier.of("pctr", "test"));
@@ -105,5 +107,5 @@ public class Packetregister implements ModInitializer {
         public Id<? extends CustomPayload> getId() {
             return ID;
         }
-    }
+    }*/
 }
