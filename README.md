@@ -59,3 +59,25 @@ public record blockPosPacket(BlockPos pos) implements CustomPayload {
 }
 ```
 本Mod会自动将此Payload注册并添加接收器.
+
+这是一个S2C包示例
+@Packet(PacketState.S2C)
+public record TestPayload(int a) implements CustomPayload {
+      @ID
+      public static final CustomPayload.Id<TestPayload> ID = new Id<>(Identifier.of("yourmodid", "test"));
+      @Codec
+      public static final PacketCodec<PacketByteBuf, TestPayload> CODEC = PacketCodec.of((value, buf) -> buf.writeInt(value.a), buf -> new TestPayload(buf.readInt()));
+
+      @Handler
+      public static void handler(TestPayload payload
+              , ClientPlayNetworking.Context context) {
+           context.client().execute(() -> {
+            context.player().sendMessage(Text.of("Hello" + payload.a));
+        });
+      }
+
+     @Override
+     public Id<? extends CustomPayload> getId() {
+         return ID;
+     }
+}
