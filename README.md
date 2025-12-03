@@ -12,25 +12,6 @@ git clone https://github.com/wish439/PacketRegister-onlyASM.git
 
 **示例**:
 ```java
-package com.wishtoday.ps.lookblock.netWorking;
-
-import com.wishtoday.Annotation.Codec;
-import com.wishtoday.Annotation.Handler;
-import com.wishtoday.Annotation.ID;
-import com.wishtoday.Annotation.Packet;
-import com.wishtoday.packetregister.Util.PacketState;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import com.wishtoday.ps.lookblock.Lookblock;
-import com.wishtoday.ps.lookblock.ServerPlayerEntityMixinAccessor;
-
 @Packet(PacketState.C2S)
 public record blockPosPacket(BlockPos pos) implements CustomPayload {
     private static final Identifier IDENTIFIER = Identifier.of(Lookblock.MOD_ID, "blockpos");
