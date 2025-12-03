@@ -85,9 +85,15 @@ publishing {
     publications {
         create("mavenJava", MavenPublication) {
             artifactId = project.archives_base_name
+            artifact(remapJar) {
+                builtBy remapJar
+            }
+            artifact(sourcesJar) {
+                builtBy sourcesJar
+            }
 //            artifact(remapJar)
 //            artifact("$buildDir/libs/PacketRegister-1.0-SNAPSHOT-sources.jar")
-            from components.java
+//            from components.java
         }
     }
 

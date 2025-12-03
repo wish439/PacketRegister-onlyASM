@@ -10,15 +10,14 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
+import static com.wishtoday.packetregister.Packetregister.log;
 import static org.objectweb.asm.Opcodes.*;
 
-@Log4j2
 public class RegisterClassGenerator extends ClassGenerator {
     private String C2SRegisterMethod = "C2SRegister";
     private String S2CRegisterMethod = "S2CRegister";
@@ -89,9 +88,7 @@ public class RegisterClassGenerator extends ClassGenerator {
             mv.visitFieldInsn(GETSTATIC, idStorage.getClassPath(), idStorage.getElementName(), Type.getDescriptor(CustomPayload.Id.class));
             mv.visitFieldInsn(GETSTATIC, codecStorage.getClassPath(), codecStorage.getElementName(), Type.getDescriptor(PacketCodec.class));
             mv.visitMethodInsn(INVOKEINTERFACE, payloadRegisterInternal, "register", getRegisterDesc(), true);
-            mv.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
-            mv.visitLdcInsn("S2C注册完成.");
-            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
+            log.info("registered S2C {}", classInfo.getClazz().getName());
         }
         mv.visitMaxs(0, 0);
         mv.visitInsn(RETURN);
@@ -115,6 +112,7 @@ public class RegisterClassGenerator extends ClassGenerator {
             mv.visitFieldInsn(GETSTATIC, idStorage.getClassPath(), idStorage.getElementName(), Type.getDescriptor(CustomPayload.Id.class));
             mv.visitFieldInsn(GETSTATIC, codecStorage.getClassPath(), codecStorage.getElementName(), Type.getDescriptor(PacketCodec.class));
             mv.visitMethodInsn(INVOKEINTERFACE, payloadRegisterInternal, "register", getRegisterDesc(), true);
+            log.info("registered C2S {}", classInfo.getClazz().getName());
         }
         mv.visitMaxs(0, 0);
         mv.visitInsn(RETURN);

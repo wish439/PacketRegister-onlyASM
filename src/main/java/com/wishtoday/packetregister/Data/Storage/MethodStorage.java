@@ -5,9 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
+import static com.wishtoday.packetregister.Packetregister.log;
+
 @Getter
 @Setter
-@Log4j2
 public final class MethodStorage extends Storage{
     private String[] args;
     private MethodStorage(String classPath, String elementName, String[] args) {

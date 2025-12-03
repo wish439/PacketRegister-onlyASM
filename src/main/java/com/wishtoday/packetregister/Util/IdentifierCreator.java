@@ -14,7 +14,7 @@ public class IdentifierCreator {
     private static final String DEFAULT_NAMESPACE = "ptdf";
     public static Identifier create(String path) {
         if (nameSpace.isEmpty()) {
-            log.error("IdentifierCreator's nameSpace is empty, will use default {}", DEFAULT_NAMESPACE);
+            log.warn("IdentifierCreator's nameSpace is empty, will use default {}", DEFAULT_NAMESPACE);
             return Identifier.of(DEFAULT_NAMESPACE, path);
         }
         return Identifier.of(nameSpace, path);

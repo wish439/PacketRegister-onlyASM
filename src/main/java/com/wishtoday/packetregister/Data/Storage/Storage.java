@@ -4,8 +4,9 @@ import com.wishtoday.packetregister.Util.DescUtils;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
+import static com.wishtoday.packetregister.Packetregister.log;
+
 @Data
-@Log4j2
 public sealed abstract class Storage permits FieldStorage, MethodStorage {
     private String elementName;
     private String classPath;

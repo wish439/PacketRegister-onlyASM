@@ -7,4 +7,8 @@ public class ClassLoadException extends RuntimeException {
     public ClassLoadException(Throwable cause) {
         super(cause);
     }
+
+    public ClassLoadException(String s, Throwable e) {
+        super(s, e);
+    }
 }

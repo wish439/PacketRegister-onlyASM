@@ -26,7 +26,8 @@ import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 import static org.objectweb.asm.Opcodes.RETURN;
 
-@Log4j2
+import static com.wishtoday.packetregister.Packetregister.log;
+
 public abstract class AbstractHandlerRegister extends ClassGenerator
         implements HandlerRegister {
 
@@ -118,7 +119,6 @@ public abstract class AbstractHandlerRegister extends ClassGenerator
         mv.visitCode();
         for (PacketClassInfo info : this.infos) {
             PacketState state = info.getState();
-            System.out.println(state.name());
             if (state != this.getProcessState()) continue;
             FieldStorage id = info.getRegisterInfo().getID();
             mv.visitFieldInsn(
@@ -146,6 +146,7 @@ public abstract class AbstractHandlerRegister extends ClassGenerator
                     , "registerGlobalReceiver"
                     , this.getRegisterMethodDesc()
                     , false);
+            log.info("generated {}", info.getClazz().getName());
             i++;
         }
         mv.visitInsn(RETURN);

@@ -9,9 +9,13 @@ import com.wishtoday.packetregister.Util.PacketState;
 import com.wishtoday.packetregister.Visitors.AnnotationVisitor.Class.PacketVisitor;
 import com.wishtoday.packetregister.Visitors.FieldVisitor.PacketFieldVisitor;
 import com.wishtoday.packetregister.Visitors.MethodVisitor.PacketHandlerVisitor;
+import lombok.AccessLevel;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import net.minecraft.network.packet.CustomPayload;
 import org.objectweb.asm.*;
+
+import static com.wishtoday.packetregister.Packetregister.log;
 
 public class PacketClassVisitor extends ClassVisitor {
     public PacketClassVisitor() {
@@ -65,6 +69,7 @@ public class PacketClassVisitor extends ClassVisitor {
     @Override
     public void visitEnd() {
         if (state == null) return;
+        log.info("{} visitEnd", this.classPath);
         PacketClassManager.getInstance()
                 .computeIfAbsent(this.classPath, k -> new PacketClassInfo())
                         .setClazz((Class<? extends CustomPayload>) ClassUtil.getClass(classPath));

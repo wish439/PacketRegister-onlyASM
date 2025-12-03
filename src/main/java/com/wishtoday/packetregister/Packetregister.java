@@ -1,40 +1,37 @@
 package com.wishtoday.packetregister;
 
+import com.google.common.collect.Lists;
 import com.wishtoday.Annotation.*;
-import com.wishtoday.packetregister.Data.Storages.DataStorage;
+import com.wishtoday.packetregister.Exception.ClassLoadException;
 import com.wishtoday.packetregister.Generator.RegisterClassGenerator;
 import com.wishtoday.packetregister.Manager.HandlerRegisterManager;
 import com.wishtoday.packetregister.Util.IdentifierCreator;
-import com.wishtoday.packetregister.Util.PacketState;
 import com.wishtoday.packetregister.Visitors.ClassVisitor.PacketClassVisitor;
 import io.github.classgraph.*;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
-@Log4j2
 public class Packetregister implements ModInitializer {
+    private static final List<String> scanPackages = Lists.newArrayList("com.wishtoday");
+
+    public static final Logger log = LogManager.getLogger(Packetregister.class);
 
     @Override
     public void onInitialize() {
         IdentifierCreator.setNameSpace("pctr");
         ScanResult scan = new ClassGraph()
-                .acceptPackages("com.wishtoday")
+                .acceptPackages(scanPackages.toArray(new String[0]))
                 .enableAllInfo()
                 .scan();
         ClassInfoList list = scan.getClassesWithAnnotation(Packet.class);
+        log.debug("Found {} packets", list.size());
+        list.forEach(log::debug);
         ClassInfoList initList = scan.getClassesWithAnnotation(Initialize.class);
         list.forEach(Packetregister::registerClassImpl);
         initList.forEach(Packetregister::initializeImpl);
@@ -46,7 +43,6 @@ public class Packetregister implements ModInitializer {
             sender.sendPacket(new TestPayload(10));
         });
 */
-
     }
 
     private static void initializeImpl(ClassInfo classInfo) {
@@ -54,6 +50,7 @@ public class Packetregister implements ModInitializer {
             Class.forName(classInfo.getName());
         } catch (ClassNotFoundException e) {
             log.error("class {} not found {}", classInfo.getName(), e.toString());
+            throw new ClassLoadException("class " + classInfo.getName() + " not found " +  e);
         }
     }
 
@@ -64,6 +61,7 @@ public class Packetregister implements ModInitializer {
             reader.accept(new PacketClassVisitor(), 0);
         } catch (IOException e) {
             log.error("asm exception {}", e.toString());
+            throw new ClassLoadException("asm exception " + e);
         }
     }
 

@@ -3,13 +3,13 @@ package com.wishtoday.packetregister.Manager;
 import com.wishtoday.packetregister.Data.PacketClassInfo;
 import com.wishtoday.packetregister.Generator.HandlerRegister.AbstractHandlerRegister;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.util.List;
 
-@Log4j2
+import static com.wishtoday.packetregister.Packetregister.log;
+
 public class HandlerRegisterManager {
     @Getter
     private static HandlerRegisterManager instance = new HandlerRegisterManager();
