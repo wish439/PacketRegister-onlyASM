@@ -21,10 +21,10 @@ dependencies {
 ```
 Gradle加载完成后，请在您的主类设置
 ```java
-    @Override
-    public void onInitialize() {
-        PacketRegisterAPI.getInstance().addPackage("your package");
-    }
+@Override
+public void onInitialize() {
+    PacketRegisterAPI.getInstance().addPackage("your package");
+}
 ```
 **其他版本** <br>
 [ASM+反射版本](https://github.com/wish439/PacketRegister) (他拥有自动创建空Codec的功能)
