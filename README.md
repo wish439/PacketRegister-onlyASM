@@ -22,7 +22,7 @@ public record blockPosPacket(BlockPos pos) implements CustomPayload {
 
     @Handler
     public static void handler(blockPosPacket payload, ServerPlayNetworking.Context context) {
-        context.player.sendMessage(payload.pos);
+        context.player().sendMessage(payload.pos);
     }
 
     @Override
