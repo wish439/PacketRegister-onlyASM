@@ -61,6 +61,7 @@ public record blockPosPacket(BlockPos pos) implements CustomPayload {
 本Mod会自动将此Payload注册并添加接收器.
 
 这是一个S2C包示例
+```java
 @Packet(PacketState.S2C)
 public record TestPayload(int a) implements CustomPayload {
       @ID
@@ -81,3 +82,4 @@ public record TestPayload(int a) implements CustomPayload {
          return ID;
      }
 }
+```
