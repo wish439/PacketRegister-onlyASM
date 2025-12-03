@@ -8,7 +8,10 @@ import com.wishtoday.packetregister.Manager.HandlerRegisterManager;
 import com.wishtoday.packetregister.Util.IdentifierCreator;
 import com.wishtoday.packetregister.Visitors.ClassVisitor.PacketClassVisitor;
 import io.github.classgraph.*;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
@@ -22,9 +25,24 @@ public class Packetregister implements ModInitializer {
 
     public static final Logger log = LogManager.getLogger(Packetregister.class);
 
+    public static void addToScan(String packageName){
+        scanPackages.add(packageName);
+    }
     @Override
     public void onInitialize() {
         IdentifierCreator.setNameSpace("pctr");
+/*
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            sender.sendPacket(new TestPayload(10));
+        });
+*/
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) return;
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+            startScan(EnvType.SERVER);
+        });
+    }
+
+    public static void startScan(EnvType type) {
         ScanResult scan = new ClassGraph()
                 .acceptPackages(scanPackages.toArray(new String[0]))
                 .enableAllInfo()
@@ -36,13 +54,8 @@ public class Packetregister implements ModInitializer {
         list.forEach(Packetregister::registerClassImpl);
         initList.forEach(Packetregister::initializeImpl);
         new RegisterClassGenerator("GeneratePacketRegister", "com.wishtoday").generate();
-        HandlerRegisterManager.getInstance().startRegister();
+        HandlerRegisterManager.getInstance().startRegister(type);
         scan.close();
-/*
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            sender.sendPacket(new TestPayload(10));
-        });
-*/
     }
 
     private static void initializeImpl(ClassInfo classInfo) {
@@ -65,7 +78,7 @@ public class Packetregister implements ModInitializer {
         }
     }
 
-   /* @Packet(PacketState.S2C)
+    /*@Packet(PacketState.S2C)
     public record TestPayload(int a) implements CustomPayload {
         @ID
         public static final CustomPayload.Id<TestPayload> ID = new Id<>(Identifier.of("pctr", "test"));
