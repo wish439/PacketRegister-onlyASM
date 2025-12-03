@@ -9,7 +9,7 @@ cd PacketRegister-onlyASM
 ```
 并在你的项目中
 ```groovy
-仓库 {
+repositories {
     mavenLocal()
 }
 ```
