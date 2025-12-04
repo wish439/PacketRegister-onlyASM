@@ -83,3 +83,4 @@ public record TestPayload(int a) implements CustomPayload {
      }
 }
 ```
+其次,添加了一个与本Mod名字不符的注解@Initialize,他用来自动加载被注解的类,这使得你不用在你的Mod主类中写上一大堆ModItems.init()等.
