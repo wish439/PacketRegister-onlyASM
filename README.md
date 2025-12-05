@@ -4,9 +4,28 @@
 目前我并没有将其发布至任何Maven仓库，这意味着你只能<br>
 ```bash
 git clone https://github.com/wish439/PacketRegister-onlyASM.git
+cd PacketRegister-onlyASM
+./gradlew publishToMavenLocal
 ```
-后自己执行**publishing**任务将其发布到本地Maven仓库并在其他仓库中依赖它. <br>
-**此Mod目前仅会扫描com.wishtoday包下的class,因为我不知道怎么开放一个API让别人正常使用**<br>
+并在你的项目中
+```groovy
+repositories {
+    mavenLocal()
+}
+```
+并在dependencies中添加
+```groovy
+dependencies {
+    compileOnly 'com.wishtoday:PacketRegisterASM:{version}'
+}
+```
+Gradle加载完成后，请在您的主类设置
+```java
+@Override
+public void onInitialize() {
+    PacketRegisterAPI.getInstance().addPackage("your package");
+}
+```
 **其他版本** <br>
 [ASM+反射版本](https://github.com/wish439/PacketRegister) (他拥有自动创建空Codec的功能)
 
@@ -40,3 +59,28 @@ public record blockPosPacket(BlockPos pos) implements CustomPayload {
 }
 ```
 本Mod会自动将此Payload注册并添加接收器.
+
+这是一个S2C包示例
+```java
+@Packet(PacketState.S2C)
+public record TestPayload(int a) implements CustomPayload {
+      @ID
+      public static final CustomPayload.Id<TestPayload> ID = new Id<>(Identifier.of("yourmodid", "test"));
+      @Codec
+      public static final PacketCodec<PacketByteBuf, TestPayload> CODEC = PacketCodec.of((value, buf) -> buf.writeInt(value.a), buf -> new TestPayload(buf.readInt()));
+
+      @Handler
+      public static void handler(TestPayload payload
+              , ClientPlayNetworking.Context context) {
+           context.client().execute(() -> {
+            context.player().sendMessage(Text.of("Hello" + payload.a));
+        });
+      }
+
+     @Override
+     public Id<? extends CustomPayload> getId() {
+         return ID;
+     }
+}
+```
+其次,添加了一个与本Mod名字不符的注解@Initialize,他用来自动加载被注解的类,这使得你不用在你的Mod主类中写上一大堆ModItems.init()等.
