@@ -167,6 +167,7 @@ public abstract class AbstractHandlerRegister extends ClassGenerator
     protected abstract String getRegisterMethodDesc();
 
     //Client should register Server Payload
+    //The single game can't invoke this method again,so we must register Server side.
     public static class AbstractHandlerRegisterFactory {
         public static AbstractHandlerRegister create(
                 EnvType envType) {
