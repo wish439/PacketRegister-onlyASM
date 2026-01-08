@@ -71,12 +71,6 @@ public abstract class AbstractHandlerRegister extends ClassGenerator
     @Override
     protected void load(byte[] data) {
 
-        try(FileOutputStream stream = new FileOutputStream(new File("J:\\桌面\\springstudys", this.className+".class"))) {
-            stream.write(data);
-        } catch (IOException e) {
-            throw new ClassLoadException(e);
-        }
-
         Class<?> aClass = loader.loadClass(getThisClassInternalName(), data);
         try {
             aClass.getMethod(this.registerMethodName).invoke(null);
