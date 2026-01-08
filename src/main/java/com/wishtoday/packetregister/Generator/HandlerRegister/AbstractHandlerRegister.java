@@ -166,6 +166,7 @@ public abstract class AbstractHandlerRegister extends ClassGenerator
 
     protected abstract String getRegisterMethodDesc();
 
+    //Client should register Server Payload
     public static class AbstractHandlerRegisterFactory {
         public static AbstractHandlerRegister create(
                 EnvType envType) {
